@@ -13,7 +13,7 @@ Welcome to the **Chat App** repository! This project is designed to provide real
 - **Frontend:** React, HTML/CSS, JavaScript
 - **Backend:** Node.js, Express.js
 - **Database:** MongoDB
-- **Real-time Communication:** Socket.IO
+- **Real-time Communication:** WebSockets
 
 ## Installation
 
