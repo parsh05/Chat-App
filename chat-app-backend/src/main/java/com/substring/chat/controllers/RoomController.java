@@ -42,8 +42,6 @@ public class RoomController {
         room.setRoomId(roomId);
         Room savedRoom = roomRepository.save(room);
         return ResponseEntity.status(HttpStatus.CREATED).body(room);
-
-
     }
 
 

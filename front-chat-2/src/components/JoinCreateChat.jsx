@@ -1,7 +1,9 @@
 import chatIcon from "../assets/chat.png";
 import {useState} from "react";
 import toast from "react-hot-toast";
-import {createRoom as createRoomAPI} from "../services/RoomService.js";
+import {createRoom as createRoomAPI, joinChatApi} from "../services/RoomService.js";
+import useChatContext from "../context/chatContext.jsx";
+import {useNavigate} from "react-router";
 
 const JoinCreateChat = () => {
 
@@ -9,10 +11,12 @@ const JoinCreateChat = () => {
       {roomId:'',
                 userName:'',
       });
-
+/* get all object of useChatContext */
+  const {roomId, userName,connected, setRoomId, setCurrentUser, setConnected} = useChatContext();
+  const navigate = useNavigate();
   function handleFormInputChange(event) {
     setDetail({...detail, // sari value pehle hi store karne ke liye
-      [event.target.name]:event.target.value});
+      [event.target.name]: event.target.value,});
   }
 function validateForm(){
     if(detail.roomId ==="" || detail.username === "" ){
@@ -25,21 +29,48 @@ function validateForm(){
  async function joinChat(){
     if(validateForm()){
       // join Chat
+        try {
+            const room = await joinChatApi(detail.roomId)
+            toast.success("Successfully joined!");
+            setCurrentUser(detail.userName);
+            setRoomId(room.roomId);
+            setConnected(true);
+            navigate("/chat");
+        }catch (error){
 
+            if(error.status === 400){
+                toast.error(error.response.data);
+            }else{
+                toast.error("Error in joining room");
+            }
+            console.log(error)
+        }
     }
   }
 async  function createRoom(){
     if(validateForm()){
       // Create Room
+        console.log(detail);
         // call API to create room on backend
       try {
         const  response = await createRoomAPI(detail.roomId)
         console.log(response)
         toast.success("Room created successfully.!");
-        joinChat();
+
+        // join the room
+            setCurrentUser(detail.userName);
+            setRoomId(response.roomId);
+            setConnected(true);
+            navigate("/chat");
+            // joinChat();
       }catch (error ){
         console.log(error);
-        console.log("Error in creating room");
+
+        if(error.status == 400){
+            toast.error("Room already exists!");
+        }else{
+            toast.error("Error in creating room!");
+        }
 
       }
     }

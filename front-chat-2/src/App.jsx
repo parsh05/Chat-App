@@ -11,7 +11,6 @@ function App() {
     return (
         <div>
             <JoinCreateChat />
-            {/*<ChatPage />*/}
         </div>
     );
 }
